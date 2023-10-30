@@ -458,3 +458,5 @@ def gen_analitica(file_2, file_1, user_id):
     sales.sheet_state = 'hidden'
 
     workbook.save(filename=f'/root/doc/{user_id}/Отчет_{date_min.strftime("%d.%m")}_{date_max.strftime("%d.%m")}_{user_id}.xlsx')
+    date = [date_min.strftime("%d.%m"), date_max.strftime("%d.%m")]
+    return date

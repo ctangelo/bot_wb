@@ -40,7 +40,7 @@ async def upload(message: types.Message, state=FSMContext):
 @dp.message_handler(content_types=['document'], state=FSMXlsx.file_1)
 async def import_file_1(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
-    await message.document.download(destination_file=f"/Users/alexsvoloch/Downloads/TG_DOC/{user_id}/file_1.xlsx")
+    await message.document.download(destination_file=f"/root/doc/{user_id}/file_1.xlsx")
    
     
     
@@ -51,12 +51,12 @@ async def import_file_1(message: types.Message, state: FSMContext):
 async def import_file_2(message: types.Message, state: FSMContext):
     await message.reply('Спасибо, ваш отчет будет готов через минуту')
     user_id = message.from_user.id
-    await message.document.download(destination_file=f"/Users/alexsvoloch/Downloads/TG_DOC/{user_id}/file_2.xlsx")
-    file_1 = f"/Users/alexsvoloch/Downloads/TG_DOC/{user_id}/file_1.xlsx"
-    file_2 = f"/Users/alexsvoloch/Downloads/TG_DOC/{user_id}/file_2.xlsx"
+    await message.document.download(destination_file=f"/root/doc/{user_id}/file_2.xlsx")
+    file_1 = f"/root/doc/{user_id}/file_1.xlsx"
+    file_2 = f"/root/doc/{user_id}/file_2.xlsx"
     try:
-        gen_analitica(file_1, file_2, user_id)
-        await bot.send_document(user_id, open(f"/Users/alexsvoloch/Downloads/TG_DOC/{user_id}/Отчет.xlsx", 'rb'))
+        date = gen_analitica(file_1, file_2, user_id)
+        await bot.send_document(user_id, open(f'/root/doc/{user_id}/Отчет_{date[0]}_{date[1]}_{user_id}.xlsx', 'rb'))
     except ValueError:
         await message.answer('Извините, что то пошло не так, возможно вы перепутали отчеты')
     
