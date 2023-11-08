@@ -5,11 +5,18 @@ from openpyxl.formatting.rule import ColorScaleRule
 from openpyxl.styles.borders import Border
 from pandas.io.excel import ExcelWriter
 from openpyxl import load_workbook
+
+from openpyxl.drawing.image import Image
 import os
 import numpy as np
 
+
+
 def gen_analitica(file_2, file_1, user_id):
-    
+
+    download_path = f"/root/doc/{user_id}/file_1.xlsx"
+    middle_path = f"/root/doc/{user_id}/Отчет.xlsx"
+
     # Функция для записи
     def update_spreadsheet(path: str, _df, startcol: int = 1, startrow: int = 1, sheet_name: str = "sheet1"):
         wb = op.load_workbook(path)
@@ -26,14 +33,10 @@ def gen_analitica(file_2, file_1, user_id):
     df2 = pd.read_excel(file_2)
     df1_1 = pd.read_excel(file_1, sheet_name='Товары')
 
-    # with ExcelWriter("FullStats.xlsx", mode="a" if os.path.exists("FullStats.xlsx") else "w") as writer:
-    #     df.sample().to_excel(writer, sheet_name="Первый отправленный отчет")
-    #     df2.sample(len(df2)).to_excel(writer, sheet_name="Второй отправленный отчет")
-
-    
 
     code = df2['Код номенклатуры'].unique()
     articul = np.sort(df2['Артикул поставщика'].unique())
+
 
     list1 = []
     list2 = []
@@ -74,11 +77,16 @@ def gen_analitica(file_2, file_1, user_id):
         list2.append(list1)
         list1 = []
 
-    list2.append([' ', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа'])
+    list2.append([' ', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 
+                  'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа'])
 
     list2.sort()
 
-    fullstats_svodnaya = pd.DataFrame(list2, columns = ['Артикул поставщика', 'Вайлдберриз реализовал Товар (Пр)', 'Продажа', 'Вознаграждение с продаж до вычета услуг поверенного, без НДС	', 'Продажа', 'Доплаты', 'Продажа', 'К перечислению Продавцу за реализованный Товар	', 'Продажа', 'Кол-во', 'Продажа', 'Количество доставок', 'Продажа', 'НДС с Вознаграждения Вайлдберриз	', 'Продажа', 'Общая сумма штрафов	', 'Продажа', 'Услуги по доставке товара покупателю	', 'Продажа', '', 'Продажа'])
+    fullstats_svodnaya = pd.DataFrame(list2, columns = ['Артикул поставщика', 'Вайлдберриз реализовал Товар (Пр)', 'Продажа', 
+                                                        'Вознаграждение с продаж до вычета услуг поверенного, без НДС	', 'Продажа', 'Доплаты', 'Продажа', 
+                                                        'К перечислению Продавцу за реализованный Товар	', 'Продажа', 'Кол-во', 'Продажа', 'Количество доставок', 
+                                                        'Продажа', 'НДС с Вознаграждения Вайлдберриз	', 'Продажа', 'Общая сумма штрафов	', 'Продажа', 
+                                                        'Услуги по доставке товара покупателю	', 'Продажа', '', 'Продажа'])
 
     list2 = []
 
@@ -103,6 +111,7 @@ def gen_analitica(file_2, file_1, user_id):
         list2.append(list1)
         list1 = []
 
+
     # делаем Продажи
     sales_df = pd.DataFrame(list2, columns=['Артикул поставщика', 'Продажа'])
 
@@ -111,45 +120,49 @@ def gen_analitica(file_2, file_1, user_id):
     fullstats_analytica = []
     fullstats_analytica2 = []
     k = 0
-    fullstats_analytica.append(['Бренд', 'Категория',	'Артикул поставщика', 'Номенклатура', 'Себестоимость', 'Кол-во Заказов', 'Количество продаж ( с учетом возврат и отмен)', 'Цена розничная с учетом согласованной скидки', 'Вайлдберриз реализовал Товар (Пр)',
-                                                            'Комиссия WB (до спп)', 'Комиссия WB (после спп)', 'Цена', 'К перечислению Продавцу за реализованный', 'Логистика', 'Логистика средняя', 'Общая сумма штрафов', 'Себестоимость сумма', 'Налог', 'Выручка (минус все расходов мп)', 'Маржинальность',
-                                                            'ROI %', 'ЧП по SKU', 'Остатки на складе, шт', 'Остатки МП, шт', 'Среднее кол-во заказов в день, шт', 'Остаток денег (wb)', 'Остаток денег (свой склад)', 'Процент выкупа, %', 'Конверсия в корзину, %', 'Конверсия в заказ, %', 'Закончится через WB',
-                                                            'Закончится через wb  / (fbs)', 'Р/К бюджет', 'ДРР'])
+    fullstats_analytica.append(['Бренд', 'Категория',	'Артикул поставщика', 'Номенклатура', 'Себестоимость', 'Кол-во Заказов', 'Количество продаж ( с учетом возврат и отмен)', 
+                                'Цена розничная с учетом согласованной скидки', 'Вайлдберриз реализовал Товар (Пр)','Комиссия WB (до спп)', 'Комиссия WB (после спп)', 
+                                'Цена', 'К перечислению Продавцу за реализованный', 'Логистика', 'Логистика средняя', 'Общая сумма штрафов', 'Себестоимость сумма', 'Налог', 
+                                'Выручка (минус все расходов мп)', 'Маржинальность', 'ROI %', 'ЧП по SKU', 'Остатки на складе, шт', 'Остатки МП, шт', 
+                                'Среднее кол-во заказов в день, шт', 'Остаток денег (wb)', 'Остаток денег (свой склад)', 'Процент выкупа, %', 'Конверсия в корзину, %', 
+                                'Конверсия в заказ, %', 'Закончится через WB', 'Закончится через wb  / (fbs)', 'Р/К бюджет', 'ДРР'])
+    
+
     for i in articul:
         fullstats_analytica2.append(next(iter(df2.loc[(df2['Артикул поставщика'] == i), 'Бренд']), 'no match'))
         fullstats_analytica2.append(next(iter(df2.loc[(df2['Артикул поставщика'] == i), 'Предмет']), 'no match'))
         fullstats_analytica2.append(i)
         fullstats_analytica2.append((next(iter(df2.loc[(df2['Артикул поставщика'] == i), 'Код номенклатуры']), 'no match')))
-        fullstats_analytica2.append(f"=VLOOKUP(C{22+k},'Себестоимость'!A:C,3,FALSE)")
+        fullstats_analytica2.append(f"=VLOOKUP(C{39+k},'Себестоимость'!A:C,3,FALSE)")
         fullstats_analytica2.append(f"='Сводная таблица'!K{3+k}-'Сводная таблица'!J{3+k}")
-        fullstats_analytica2.append(f"=IFERROR(VLOOKUP(C{22+k},'Продажи'!A:B,2,FALSE),0)")
+        fullstats_analytica2.append(f"=IFERROR(VLOOKUP(C{39+k},'Продажи'!A:B,2,FALSE),0)")
         fullstats_analytica2.append(f"='Сводная таблица'!U{3+k}-'Сводная таблица'!T{3+k}")
         fullstats_analytica2.append(f"='Сводная таблица'!C{3+k}-'Сводная таблица'!B{3+k}")
-        fullstats_analytica2.append(f"=H{22+k}-M{22+k}")
+        fullstats_analytica2.append(f"=H{39+k}-M{39+k}")
         fullstats_analytica2.append(f"=('Сводная таблица'!E{3+k}+'Сводная таблица'!O{3+k})-('Сводная таблица'!D{3+k}+'Сводная таблица'!N{3+k})")
-        fullstats_analytica2.append(f"=IF(G{22+k}=0,0,M{22+k}/G{22+k})")
+        fullstats_analytica2.append(f"=IF(G{39+k}=0,0,M{39+k}/G{39+k})")
         fullstats_analytica2.append(f"=('Сводная таблица'!I{3+k}-'Сводная таблица'!H{3+k})")
         fullstats_analytica2.append(f"='Сводная таблица'!S{3+k}")
-        fullstats_analytica2.append(f"=IF(F{22+k}=0,0,('Сводная таблица'!S{3+k}/F{22+k}))")
+        fullstats_analytica2.append(f"=IF(F{39+k}=0,0,('Сводная таблица'!S{3+k}/F{39+k}))")
         fullstats_analytica2.append(f"='Сводная таблица'!Q{3+k} -'Сводная таблица'!P{3+k}")
-        fullstats_analytica2.append(f"=E{22+k}*G{22+k}")
-        fullstats_analytica2.append(f"=I{22+k}*$E$6/100")
-        fullstats_analytica2.append(f"=M{22+k}-N{22+k}-P{22+k}")
-        fullstats_analytica2.append(f"=IF(S{22+k}=0,0,V{22+k}/S{22+k})")
-        fullstats_analytica2.append(f"=IF(Q{22+k}=0,0,V{22+k}/Q{22+k})")
-        fullstats_analytica2.append(f"=M{22+k}-N{22+k}-P{22+k}-Q{22+k}-R{22+k}-AG{22+k}")
+        fullstats_analytica2.append(f"=E{39+k}*G{39+k}")
+        fullstats_analytica2.append(f"=I{39+k}*$B$23/100")
+        fullstats_analytica2.append(f"=M{39+k}-N{39+k}-P{39+k}")
+        fullstats_analytica2.append(f"=IF(S{39+k}=0,0,V{39+k}/S{39+k})")
+        fullstats_analytica2.append(f"=IF(Q{39+k}=0,0,V{39+k}/Q{39+k})")
+        fullstats_analytica2.append(f"=M{39+k}-N{39+k}-P{39+k}-Q{39+k}-R{39+k}-AG{39+k}")
         fullstats_analytica2.append((df1_1.loc[(df1_1['Артикул продавца'] == i), 'Остатки склад, шт']).sum())
         fullstats_analytica2.append((df1_1.loc[(df1_1['Артикул продавца'] == i), 'Остатки МП, шт']).sum())
         fullstats_analytica2.append((df1_1.loc[(df1_1['Артикул продавца'] == i), 'Среднее количество заказов в день, шт']).sum())
-        fullstats_analytica2.append(f"=E{22+k}*W{22+k}")
-        fullstats_analytica2.append(f"=X{22+k}*E{22+k}")
+        fullstats_analytica2.append(f"=E{39+k}*W{39+k}")
+        fullstats_analytica2.append(f"=X{39+k}*E{39+k}")
         fullstats_analytica2.append((df1_1.loc[(df1_1['Артикул продавца'] == i), 'Процент выкупа']).sum())
         fullstats_analytica2.append((df1_1.loc[(df1_1['Артикул продавца'] == i), 'Конверсия в корзину, %']).sum())
         fullstats_analytica2.append((df1_1.loc[(df1_1['Артикул продавца'] == i), 'Конверсия в заказ, %']).sum())
-        fullstats_analytica2.append(f"=IF(Y{22+k}=0,0,W{22+k}/Y{22+k})")
-        fullstats_analytica2.append(f"=IF(Y{22+k}=0,0,X{22+k}/Y{22+k})")
-        fullstats_analytica2.append(f"=IFERROR(VLOOKUP(C{22+k},'Затраты на РК'!A:C,3,FALSE),0)")
-        fullstats_analytica2.append(f"=IF(S{22+k}=0,0,AG{22+k}/S{22+k})")
+        fullstats_analytica2.append(f"=IF(Y{39+k}=0,0,W{39+k}/Y{39+k})")
+        fullstats_analytica2.append(f"=IF(Y{39+k}=0,0,X{39+k}/Y{39+k})")
+        fullstats_analytica2.append(f"=IFERROR(VLOOKUP(C{39+k},'Затраты на РК'!A:C,3,FALSE),0)")
+        fullstats_analytica2.append(f"=IF(S{39+k}=0,0,AG{39+k}/S{39+k})")
 
         k += 1
         
@@ -157,21 +170,28 @@ def gen_analitica(file_2, file_1, user_id):
         fullstats_analytica2 = []
 
 
-    fullstats1_df = pd.DataFrame(fullstats_analytica, columns=['Бренд', 'Категория',	'Артикул поставщика', 'Номенклатура', 'Себестоимость', 'Кол-во Заказов', 'Количество продаж ( с учетом возврат и отмен)', 'Цена розничная с учетом согласованной скидки', 'Вайлдберриз реализовал Товар (Пр)',
-                                                            'Комиссия WB (до спп)', 'Комиссия WB (после спп)', 'Цена', 'К перечислению Продавцу за реализованный', 'Логистика', 'Логистика средняя', 'Общая сумма штрафов', 'Себестоимость сумма', 'Налог', 'Выручка (минус все расходов мп)', 'Маржинальность',
-                                                            'ROI %', 'ЧП по SKU', 'Остатки на складе, шт', 'Остатки МП, шт', 'Среднее кол-во заказов в день, шт', 'Остаток денег (wb)', 'Остаток денег (свой склад)', 'Процент выкупа, %', 'Конверсия в корзину, %', 'Конверсия в заказ, %', 'Закончится через WB',
-                                                            'Закончится через wb  / (fbs)', 'Р/К бюджет', 'ДРР'])
-    len_df = 20+len(fullstats1_df)
+    fullstats1_df = pd.DataFrame(fullstats_analytica, columns=['Бренд', 'Категория',	'Артикул поставщика', 'Номенклатура', 'Себестоимость', 'Кол-во Заказов', 
+                                                               'Количество продаж ( с учетом возврат и отмен)', 'Цена розничная с учетом согласованной скидки', 
+                                                               'Вайлдберриз реализовал Товар (Пр)', 'Комиссия WB (до спп)', 'Комиссия WB (после спп)', 'Цена', 
+                                                               'К перечислению Продавцу за реализованный', 'Логистика', 'Логистика средняя', 'Общая сумма штрафов', 
+                                                               'Себестоимость сумма', 'Налог', 'Выручка (минус все расходов мп)', 'Маржинальность', 'ROI %', 
+                                                               'ЧП по SKU', 'Остатки на складе, шт', 'Остатки МП, шт', 'Среднее кол-во заказов в день, шт', 
+                                                               'Остаток денег (wb)', 'Остаток денег (свой склад)', 'Процент выкупа, %', 'Конверсия в корзину, %', 
+                                                               'Конверсия в заказ, %', 'Закончится через WB', 'Закончится через wb  / (fbs)', 'Р/К бюджет', 'ДРР'])
+    len_df = 37+len(fullstats1_df)
 
-    fullstats1_df.loc[len(fullstats1_df.index)] = ['', '', '', '', '', f"=SUM(F22:F{len_df})", f"=SUM(G22:G{len_df})", f"=SUM(H21:H{len_df})", f"=SUM(I21:I{len_df})", f"=SUM(J21:J{len_df})", f"=SUM(K21:K{len_df})", f"=AVERAGE(L21:L{len_df})", f"=SUM(M21:M{len_df})",
-                                            f"=SUM(N21:N{len_df})", f"=AVERAGE(O21:O{len_df})", f"=SUM(P21:P{len_df})", f"=SUM(Q21:Q{len_df})", f"=SUM(R21:R{len_df})", f"=SUM(S21:S{len_df})", f"=IF(S{len_df+1}=0,0,V{len_df+1}/S{len_df+1})",
-                                            f"=IF(Q{len_df+1}=0,0,V{len_df+1}/Q{len_df+1})", f"=M{len_df+1}-N{len_df+1}-P{len_df+1}-Q{len_df+1}-R{len_df+1}-AG{len_df+1}", f"=SUM(W21:W{len_df})", f"=SUM(X21:X{len_df})", f"=AVERAGE(Y21:Y{len_df})", f"=SUM(Z21:Z{len_df})",
-                                            f"=SUM(AA21:AA{len_df})", f"=AVERAGE(AB21:AB{len_df})", f"=AVERAGE(AC21:AC{len_df})", f"=AVERAGE(AD21:AD{len_df})", "", "", f"=SUM(AG21:AG{len_df})", f"=SUM(AH21:AH{len_df})"]
+    fullstats1_df.loc[len(fullstats1_df.index)] = ['', '', '', '', '', f"=SUM(F39:F{len_df})", f"=SUM(G39:G{len_df})", f"=SUM(H39:H{len_df})", f"=SUM(I39:I{len_df})", 
+                                                   f"=SUM(J39:J{len_df})", f"=SUM(K39:K{len_df})", f"=AVERAGE(L39:L{len_df})", f"=SUM(M39:M{len_df})", f"=SUM(N39:N{len_df})", 
+                                                   f"=AVERAGE(O39:O{len_df})", f"=SUM(P39:P{len_df})", f"=SUM(Q39:Q{len_df})", f"=SUM(R39:R{len_df})", f"=SUM(S39:S{len_df})", 
+                                                   f"=IF(S{len_df+1}=0,0,V{len_df+1}/S{len_df+1})", f"=IF(Q{len_df+1}=0,0,V{len_df+1}/Q{len_df+1})", 
+                                                   f"=M{len_df+1}-N{len_df+1}-P{len_df+1}-Q{len_df+1}-R{len_df+1}-AG{len_df+1}", f"=SUM(W39:W{len_df})", f"=SUM(X39:X{len_df})", 
+                                                   f"=AVERAGE(Y39:Y{len_df})", f"=SUM(Z39:Z{len_df})", f"=SUM(AA39:AA{len_df})", f"=AVERAGE(AB39:AB{len_df})", 
+                                                   f"=AVERAGE(AC39:AC{len_df})", f"=AVERAGE(AD39:AD{len_df})", "", "", f"=SUM(AG39:AG{len_df})", f"=SUM(AH39:AH{len_df})"]
 
 
 
-    lst = ['Период', 'Продано всего, шт.', 'Выручка за период всего, руб.', 'Заказано всего, шт.', 'Возвращено всего, шт.', 'Реклама всего, руб.', 'Штрафы, руб.', 'Комиссия WB', 'Логистика, руб.',
-        'Себестоимость_сумма', 'Хранение, руб.', 'Прочие расходы, руб.', 'Налог', 'Налогооблагаемая база', 'Прибыль', 'Маржинальность','ROI %']
+    lst = ['Период', 'Выкуплено, шт.', 'Выкуплено, руб.', 'Заказано, шт.', 'Возврат, шт.', 'Реклама всего, руб.', 'Штрафы, руб.', 
+           'Комиссия WB', 'Логистика, руб.', 'Себестоимость выкупленного товара', 'Хранение, руб.', 'Прочие расходы, руб.', 'Налог', 'Налогооблагаемая база', 'Прибыль', 'Маржинальность','ROI %']
 
     df2['Дата продажи'] = df2['Дата продажи'].astype('datetime64[ns]')
     df2['Дата продажи'] = pd.to_datetime(df2['Дата продажи']).dt.normalize()
@@ -180,14 +200,15 @@ def gen_analitica(file_2, file_1, user_id):
     date_max = df2['Дата продажи'].max()
     
 
-    lst_2 = [f'{date_min.strftime("%d.%m")} - {date_max.strftime("%d.%m")}', f"=G{len_df+1}", f"=H{len_df+1}", f"=F{len_df+1}", f"=SUM('Сводная таблица'!J3:J{3+len(fullstats1_df)})", "=$E$8", f"=P{len_df+1}", f"=J{len_df+1}", f"=N{len_df+1}", f"=Q{len_df+1}", "=$E$7", "=$E$9", f"=I{len_df+1}*$E$6/100", f"=I{len_df+1}", "=B4-B7-B8-B9-B10-B11-B12-B13-B14",
-            f"=T{len_df+1}",  f"=U{len_df+1}"]
+    lst_2 = [f'{date_min.strftime("%d.%m")} - {date_max.strftime("%d.%m")}', f"=G{len_df+1}", f"=H{len_df+1}", f"=F{len_df+1}", 
+             f"=SUM('Сводная таблица'!J3:J{3+len(fullstats1_df)})", "=$E$8", f"=P{len_df+1}", f"=J{len_df+1}", f"=N{len_df+1}", f"=Q{len_df+1}", "=$B$24", "=$B$26", 
+             f"=I{len_df+1}*$B$23/100", f"=I{len_df+1}", "=B4-B7-B8-B9-B10-B11-B12-B13-B14", f"=T{len_df+1}",  f"=U{len_df+1}"]
 
     fullstats2_df = pd.DataFrame(list(zip(lst, lst_2)), columns=['', ''])
 
-    fullstats2_df.to_excel(f"/root/doc/{user_id}/Отчет.xlsx", index=False, sheet_name='Аналитика')
+    fullstats2_df.to_excel(middle_path, index=False, sheet_name='Аналитика')
 
-    update_spreadsheet(f"/root/doc/{user_id}/Отчет.xlsx", fullstats1_df, 1, 21, sheet_name='Аналитика')
+    update_spreadsheet(middle_path, fullstats1_df, 1, 38, sheet_name='Аналитика')
 
 
 
@@ -195,20 +216,18 @@ def gen_analitica(file_2, file_1, user_id):
     lst_2 = [f'=Z{len_df+1}', f'=AA{len_df+1}', f'=W{len_df+1}', '', '','','']
 
     fullstats3_df = pd.DataFrame(list(zip(lst, lst_2)), columns=['', ''])
-    update_spreadsheet(f"/root/doc/{user_id}/Отчет.xlsx", fullstats3_df, 4, 3, sheet_name='Аналитика')
+    update_spreadsheet(middle_path, fullstats3_df, 1, 20, sheet_name='Аналитика')
 
-    lst = ['Продажа', 'К перечислению за товар', 'Стоимость логистики', 'Итого к оплате.']
-    lst_2 = [f'=I{len_df+1}', f'=M{len_df+1}', f'=N{len_df+1}', f'=M{len_df+1}-E7-E8-E9-N{len_df+1}']
+    lst = ['Продажа', 'К перечислению', 'Логистика за период', 'Итого к оплате.']
+    lst_2 = [f'=I{len_df+1}', f'=M{len_df+1}', f'=N{len_df+1}', f'=M{len_df+1}-B24-B25-B26-N{len_df+1}']
 
     fullstats4_df = pd.DataFrame(list(zip(lst, lst_2)), columns=['', ''])
-    update_spreadsheet(f"/root/doc/{user_id}/Отчет.xlsx", fullstats4_df, 4, 14, sheet_name='Аналитика')
+    update_spreadsheet(middle_path, fullstats4_df, 1, 31, sheet_name='Аналитика')
 
-    df = pd.read_excel(f"/root/doc/{user_id}/Отчет.xlsx")
+    df = pd.read_excel(middle_path)
 
-    with ExcelWriter(f"/root/doc/{user_id}/Отчет.xlsx", mode="a" if os.path.exists(f"/root/doc/{user_id}/Отчет.xlsx") else "w", engine='openpyxl') as writer:
-        # df.sample(len(df)).to_excel(writer, sheet_name="FulStats аналитика")
+    with ExcelWriter(middle_path, mode="a" if os.path.exists(middle_path) else "w", engine='openpyxl') as writer:
         marketing_df.to_excel(writer, sheet_name="Затраты на РК", index=False)
-        
         price_df.to_excel(writer, sheet_name="Себестоимость", index=False)
         sales_df.to_excel(writer, sheet_name="Продажи", index=False)
         fullstats_svodnaya.to_excel(writer, sheet_name="Сводная таблица", index=False)
@@ -218,9 +237,8 @@ def gen_analitica(file_2, file_1, user_id):
 
 
     # Работаем с форматированием таблицы
-    # center_aligned_text = Alignment(horizontal="center")
 
-    workbook = op.load_workbook(filename=f"/root/doc/{user_id}/Отчет.xlsx", read_only=False)
+    workbook = op.load_workbook(filename=middle_path, read_only=False)
     sheet = workbook.active
     marketing_sheet = workbook['Затраты на РК']
     fullstats_svodnaya_sheet = workbook['Сводная таблица']
@@ -262,60 +280,69 @@ def gen_analitica(file_2, file_1, user_id):
     sheet.column_dimensions["AG"].width = 20
     sheet.column_dimensions["AH"].width = 20
 
-    sheet['D2'] = 'Финансы'
-    sheet.merge_cells('D2:E2')
-    sheet['D2'].font = Font(bold=True)
-    sheet['D2'].alignment = Alignment(horizontal='center')
+    sheet['E28'] = 'Наш сайт'
+    sheet['F28'] = 'https://izzy-agncy.ru/'
 
-    sheet['D13'] = 'Сравнение с результатами WB'
-    sheet.merge_cells('D13:E13')
-    sheet['D13'].font = Font(bold=True)
-    sheet['D13'].alignment = Alignment(horizontal='center')
+    sheet['E29'] = 'Наш Instagram*'
+    sheet['F29'] = 'https://instagram.com/izzi_agncy?igshid=OGQ5ZDc2ODk2ZA=='
+
+    sheet['E30'] = '*компания Meta Platforms Inc., владеющая Facebook и Instagram, внесена в реестр экстремистских организаций, ее деятельность в России по поддержанию указанных соцсетей признана экстремистской деятельностью'
+   
+    sheet['A19'] = 'Финансы'
+    sheet.merge_cells('A19:B19')
+    sheet['A19'].font = Font(bold=True)
+    sheet['A19'].alignment = Alignment(horizontal='center')
+
+    sheet['A30'] = 'Итого'
+    sheet.merge_cells('A30:B30')
+    sheet['A30'].font = Font(bold=True)
+    sheet['A30'].alignment = Alignment(horizontal='center')
 
     sheet['B2'].fill = PatternFill(start_color="BCBCBC", end_color="BCBCBC", fill_type = "solid")
-    sheet['B13'].fill = PatternFill(start_color="BCBCBC", end_color="BCBCBC", fill_type = "solid")
-    sheet['B14'].fill = PatternFill(start_color="BCBCBC", end_color="BCBCBC", fill_type = "solid")
-    sheet['B15'].fill = PatternFill(start_color="BCBCBC", end_color="BCBCBC", fill_type = "solid")
-    sheet['B16'].fill = PatternFill(start_color="BCBCBC", end_color="BCBCBC", fill_type = "solid")
-    sheet['B17'].fill = PatternFill(start_color="BCBCBC", end_color="BCBCBC", fill_type = "solid")
-    sheet['B18'].fill = PatternFill(start_color="BCBCBC", end_color="BCBCBC", fill_type = "solid")
+    
+    for row in sheet.iter_rows(min_row=13, min_col=2, max_row=18, max_col=2):
+        for cell in row:
+            cell.fill = PatternFill(start_color="b06bf7", end_color="b06bf7", fill_type = "solid")
+            cell.font = Font(bold=True, color='fcfcfc')
 
-    sheet['E6'].fill = PatternFill(start_color="F09A3F", end_color="F09A3F", fill_type = "solid")
-    sheet['E8'].fill = PatternFill(start_color="F09A3F", end_color="F09A3F", fill_type = "solid")
-    sheet['E9'].fill = PatternFill(start_color="F09A3F", end_color="F09A3F", fill_type = "solid")
-    sheet['E7'].fill = PatternFill(start_color="F09A3F", end_color="F09A3F", fill_type = "solid")
+    
 
-    sheet['E14'].fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type = "solid")
-    sheet['E15'].fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type = "solid")
-    sheet['E16'].fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type = "solid")
-    sheet['E17'].fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type = "solid")
+    sheet['B23'].fill = PatternFill(start_color="F09A3F", end_color="F09A3F", fill_type = "solid")
+    sheet['B24'].fill = PatternFill(start_color="F09A3F", end_color="F09A3F", fill_type = "solid")
+    sheet['B25'].fill = PatternFill(start_color="F09A3F", end_color="F09A3F", fill_type = "solid")
+    sheet['B26'].fill = PatternFill(start_color="F09A3F", end_color="F09A3F", fill_type = "solid")
+
+    sheet['B31'].fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type = "solid")
+    sheet['B32'].fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type = "solid")
+    sheet['B33'].fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type = "solid")
+    sheet['B34'].fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type = "solid")
 
     color_scale_rule = ColorScaleRule(start_type='percentile', start_value=1, start_color="00FF0000",  # красный
                                     mid_type='percentile', mid_value=50, mid_color='ffff00',
                                     end_type='percentile', end_value=99, end_color="0000FF00")  # зеленый
 
-    sheet.conditional_formatting.add(f"S22:S{len_df+1}", color_scale_rule)
-    sheet.conditional_formatting.add(f"T22:T{len_df+1}", color_scale_rule)
-    sheet.conditional_formatting.add(f"U22:U{len_df+1}", color_scale_rule)
-    sheet.conditional_formatting.add(f"V22:V{len_df+1}", color_scale_rule)
+    sheet.conditional_formatting.add(f"S39:S{len_df+1}", color_scale_rule)
+    sheet.conditional_formatting.add(f"T39:T{len_df+1}", color_scale_rule)
+    sheet.conditional_formatting.add(f"U39:U{len_df+1}", color_scale_rule)
+    sheet.conditional_formatting.add(f"V39:V{len_df+1}", color_scale_rule)
 
-    for cell in sheet["21:21"]:
+    for cell in sheet["38:38"]:
         cell.alignment = Alignment(wrap_text=True, horizontal='center', vertical='center')
-        cell.fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type = "solid")
-        cell.font = Font(bold=True, size=10)
+        cell.fill = PatternFill(start_color="666666", end_color="666666", fill_type = "solid")
+        cell.font = Font(bold=True, size=10, color='fcfcfc')
         
     sheet['B14'].number_format = '#,##0.00'
     sheet['B16'].number_format = '#,##0.00' 
     sheet['B3'].number_format = '#,##0' 
-    sheet['E4'].number_format = '#,##0' 
+    sheet['B22'].number_format = '#,##0' 
     sheet['B6'].number_format = '#,##0' 
 
     for cell in sheet[F"{len_df+1}:{len_df+1}"]:
-        cell.fill = PatternFill(start_color="F0C23B", end_color="F0C23B", fill_type = "solid")
+        cell.fill = PatternFill(start_color="666666", end_color="666666", fill_type = "solid")
         cell.number_format = '#,##0.00' 
+        cell.font = Font(bold=True, color='fcfcfc')
 
     border1 = borders.Side(style = None, color = 'FF000000', border_style = 'thin')
-    border0 = borders.Side(style = None, color = None, border_style = None)
     thin = Border(left = border1, right = border1, bottom = border1, top = border1)
 
     for row in sheet.iter_rows(min_row=13, min_col=1, max_row=18, max_col=2):
@@ -326,7 +353,12 @@ def gen_analitica(file_2, file_1, user_id):
         for cell in row:
             cell.font = Font(bold=True, size=12)
 
-    for row in sheet.iter_rows(min_row=21, min_col=1, max_row=len_df+1, max_col=34):
+    for row in sheet.iter_rows(min_row=38, min_col=1, max_row=len_df+1, max_col=34):
+        for cell in row:
+            cell.border = thin
+
+
+    for row in sheet.iter_rows(min_row=30, min_col=1, max_row=34, max_col=2):
         for cell in row:
             cell.border = thin
 
@@ -336,53 +368,62 @@ def gen_analitica(file_2, file_1, user_id):
             cell.border = thin
 
 
-    for row in sheet.iter_rows(min_row=2, min_col=4, max_row=17, max_col=5):
+    for row in sheet.iter_rows(min_row=20, min_col=1, max_row=27, max_col=2):
         for cell in row:
             cell.border = thin
 
 
-    for row in sheet.iter_rows(min_row=22, min_col=8, max_row=len_df, max_col=34):
+    for row in sheet.iter_rows(min_row=39, min_col=8, max_row=len_df, max_col=34):
         for cell in row:
             cell.number_format = '#,##0.00' 
 
-
-    for row in sheet.iter_rows(min_row=22, min_col=3, max_row=len_df, max_col=3):
+    for row in sheet.iter_rows(min_row=39, min_col=34, max_row=len_df+1, max_col=34):
         for cell in row:
-            cell.fill = PatternFill(start_color="BCBCBC", end_color="BCBCBC", fill_type = "solid")
+            cell.number_format = '0.00%'
 
 
-    for row in sheet.iter_rows(min_row=22, min_col=5, max_row=len_df, max_col=5):
+    for row in sheet.iter_rows(min_row=31, min_col=2, max_row=34, max_col=2):
+        for cell in row:
+            cell.fill = PatternFill(start_color="ffff00", end_color="ffff00", fill_type = "solid")
+
+
+    for row in sheet.iter_rows(min_row=39, min_col=5, max_row=len_df, max_col=5):
         for cell in row:
             cell.fill = PatternFill(start_color="F09A3F", end_color="F09A3F", fill_type = "solid")
 
 
-    for row in sheet.iter_rows(min_row=22, min_col=6, max_row=len_df, max_col=34):
+    for row in sheet.iter_rows(min_row=39, min_col=6, max_row=len_df, max_col=34):
         for cell in row:
-            cell.fill = PatternFill(start_color="9FC5E8", end_color="9FC5E8", fill_type = "solid")
+            cell.fill = PatternFill(start_color="f859ff", end_color="f859ff", fill_type = "solid")
         
 
     for num in [7, 12, 14, 15, 16, 26, 27, 33, 34]:
-        for row in sheet.iter_rows(min_row=22, min_col=num, max_row=len_df, max_col=num):
+        for row in sheet.iter_rows(min_row=39, min_col=num, max_row=len_df, max_col=num):
             for cell in row:
-                cell.fill = PatternFill(start_color="FAE7D3", end_color="FAE7D3", fill_type = "solid")
+                cell.fill = PatternFill(start_color="bcfe1a", end_color="bcfe1a", fill_type = "solid")
 
 
-    for row in sheet.iter_rows(min_row=21, min_col=1, max_row=21, max_col=33):
+    for row in sheet.iter_rows(min_row=39, min_col=1, max_row=21, max_col=33):
         for cell in row:
             cell.alignment = Alignment(wrap_text=True, horizontal='center')
             
-    sheet.row_dimensions[21].height = 40
+    sheet.row_dimensions[38].height = 40
 
     for num in [20, 21]:
-        for row in sheet.iter_rows(min_row=21, min_col=num, max_row=len_df+1, max_col=num):
+        for row in sheet.iter_rows(min_row=39, min_col=num, max_row=len_df+1, max_col=num):
             for cell in row:
                 cell.number_format = '0%'
 
-   
+    img = op.drawing.image.Image("logo.png")
+    img.height = 400
+    img.width= 400
+    img.anchor = 'D2'
+    sheet.add_image(img)
 
     price_sheet.column_dimensions["A"].width = 30
     price_sheet.column_dimensions["B"].width = 30
     price_sheet.column_dimensions["C"].width = 30
+    
     for cell in price_sheet["1:1"]:
         cell.fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type = "solid")
 

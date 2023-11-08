@@ -11,7 +11,7 @@ from main import gen_analitica
 
 
 storage = MemoryStorage()
-TOKEN = '2146493358:AAH4lkALC3NYXoWbWNYxz5M0HkuT0AuIYVo'
+TOKEN = 'TOKEN'
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot, storage=storage)
@@ -44,7 +44,7 @@ async def import_file_1(message: types.Message, state: FSMContext):
    
     
     
-    await message.reply('Теперь загрузите Аналитика карточек товара (14 отчет)')
+    await message.reply('Теперь загрузите отчет ВОРОНКА ПРОДАЖ (из аналитики продавца)')
     await FSMXlsx.next()
 
 @dp.message_handler(content_types=['document'], state=FSMXlsx.file_2)
