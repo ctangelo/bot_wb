@@ -68,8 +68,8 @@ def gen_analitica(file_2, file_1, user_id):
         list1.append(df2.loc[(df2['Код номенклатуры'] == i) & (df2['Тип документа'] == 'Возврат'), 'Общая сумма штрафов'].sum())
         list1.append(df2.loc[(df2['Код номенклатуры'] == i) & (df2['Тип документа'] == 'Продажа'), 'Общая сумма штрафов'].sum())
 
-        list1.append(df2.loc[(df2['Код номенклатуры'] == i) & (df2['Тип документа'] == 'Возврат'), 'Услуги по доставке товара покупателю'].sum())
-        list1.append(df2.loc[(df2['Код номенклатуры'] == i) & (df2['Тип документа'] == 'Продажа'), 'Услуги по доставке товара покупателю'].sum())
+        list1.append(df2.loc[(df2['Код номенклатуры'] == i), 'Услуги по доставке товара покупателю'].sum())
+        list1.append("")
 
         list1.append(df2.loc[(df2['Код номенклатуры'] == i) & (df2['Тип документа'] == 'Возврат'), 'Цена розничная с учетом согласованной скидки'].sum())
         list1.append(df2.loc[(df2['Код номенклатуры'] == i) & (df2['Тип документа'] == 'Продажа'), 'Цена розничная с учетом согласованной скидки'].sum())
@@ -280,13 +280,6 @@ def gen_analitica(file_2, file_1, user_id):
     sheet.column_dimensions["AG"].width = 20
     sheet.column_dimensions["AH"].width = 20
 
-    sheet['E28'] = 'Наш сайт'
-    sheet['F28'] = 'https://izzy-agncy.ru/'
-
-    sheet['E29'] = 'Наш Instagram*'
-    sheet['F29'] = 'https://instagram.com/izzi_agncy?igshid=OGQ5ZDc2ODk2ZA=='
-
-    sheet['E30'] = '*компания Meta Platforms Inc., владеющая Facebook и Instagram, внесена в реестр экстремистских организаций, ее деятельность в России по поддержанию указанных соцсетей признана экстремистской деятельностью'
    
     sheet['A19'] = 'Финансы'
     sheet.merge_cells('A19:B19')
@@ -414,11 +407,11 @@ def gen_analitica(file_2, file_1, user_id):
             for cell in row:
                 cell.number_format = '0%'
 
-    img = op.drawing.image.Image("logo.png")
-    img.height = 400
-    img.width= 400
-    img.anchor = 'D2'
-    sheet.add_image(img)
+    # img = op.drawing.image.Image("logo.png")
+    # img.height = 400
+    # img.width= 400
+    # img.anchor = 'D2'
+    # sheet.add_image(img)
 
     price_sheet.column_dimensions["A"].width = 30
     price_sheet.column_dimensions["B"].width = 30
