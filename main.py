@@ -186,7 +186,7 @@ def gen_analitica(file_2, file_1, user_id):
                                                    f"=IF(S{len_df+1}=0,0,V{len_df+1}/S{len_df+1})", f"=IF(Q{len_df+1}=0,0,V{len_df+1}/Q{len_df+1})", 
                                                    f"=M{len_df+1}-N{len_df+1}-P{len_df+1}-Q{len_df+1}-R{len_df+1}-AG{len_df+1}", f"=SUM(W39:W{len_df})", f"=SUM(X39:X{len_df})", 
                                                    f"=AVERAGE(Y39:Y{len_df})", f"=SUM(Z39:Z{len_df})", f"=SUM(AA39:AA{len_df})", f"=AVERAGE(AB39:AB{len_df})", 
-                                                   f"=AVERAGE(AC39:AC{len_df})", f"=AVERAGE(AD39:AD{len_df})", "", "", f"=SUM(AG39:AG{len_df})", f"=SUM(AH39:AH{len_df})"]
+                                                   f"=AVERAGE(AC39:AC{len_df})", f"=AVERAGE(AD39:AD{len_df})", "", "", f"=SUM(AG39:AG{len_df})", f"=IF({len_df+1}=0;0;AG{len_df+1}/S{len_df+1})"]
 
 
 
@@ -201,7 +201,7 @@ def gen_analitica(file_2, file_1, user_id):
     
 
     lst_2 = [f'{date_min.strftime("%d.%m")} - {date_max.strftime("%d.%m")}', f"=G{len_df+1}", f"=H{len_df+1}", f"=F{len_df+1}", 
-             f"=SUM('Сводная таблица'!J3:J{3+len(fullstats1_df)})", "=$E$8", f"=P{len_df+1}", f"=J{len_df+1}", f"=N{len_df+1}", f"=Q{len_df+1}", "=$B$24", "=$B$26", 
+             f"=SUM('Сводная таблица'!J3:J{3+len(fullstats1_df)})", "=$B$25", f"=P{len_df+1}", f"=J{len_df+1}", f"=N{len_df+1}", f"=Q{len_df+1}", "=$B$24", "=$B$26", 
              f"=I{len_df+1}*$B$23/100", f"=I{len_df+1}", "=B4-B7-B8-B9-B10-B11-B12-B13-B14", f"=T{len_df+1}",  f"=U{len_df+1}"]
 
     fullstats2_df = pd.DataFrame(list(zip(lst, lst_2)), columns=['', ''])
@@ -324,6 +324,7 @@ def gen_analitica(file_2, file_1, user_id):
         cell.fill = PatternFill(start_color="666666", end_color="666666", fill_type = "solid")
         cell.font = Font(bold=True, size=10, color='fcfcfc')
         
+
     sheet['B14'].number_format = '#,##0.00'
     sheet['B16'].number_format = '#,##0.00' 
     sheet['B3'].number_format = '#,##0' 
@@ -334,6 +335,10 @@ def gen_analitica(file_2, file_1, user_id):
         cell.fill = PatternFill(start_color="666666", end_color="666666", fill_type = "solid")
         cell.number_format = '#,##0.00' 
         cell.font = Font(bold=True, color='fcfcfc')
+
+    for row in sheet.iter_rows(min_row=len_df+1, min_col=19, max_row=len_df+1, max_col=22):
+        for cell in row:
+            cell.font = Font(bold=True, color='000000')
 
     border1 = borders.Side(style = None, color = 'FF000000', border_style = 'thin')
     thin = Border(left = border1, right = border1, bottom = border1, top = border1)

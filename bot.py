@@ -25,8 +25,11 @@ class FSMXlsx(StatesGroup):
     file_1 = State()
     file_2 = State()
 
-@dp.message_handler(commands=['start'])
-async def start_message(message: types.Message):
+@dp.message_handler(commands=['start'], state="*")
+async def start_message(message: types.Message, state: FSMContext):
+    current_state = await state.get_state()
+    if current_state:  
+        await state.finish()
     await bot.send_message(message.from_user.id, '👋Привет! Нажми /upload чтоб начать', reply_markup=upload_btn)
 
 
