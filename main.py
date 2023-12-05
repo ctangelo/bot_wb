@@ -68,8 +68,8 @@ def gen_analitica(file_2, file_1, user_id):
         list1.append(df2.loc[(df2['Код номенклатуры'] == i) & (df2['Тип документа'] == 'Возврат'), 'Общая сумма штрафов'].sum())
         list1.append(df2.loc[(df2['Код номенклатуры'] == i) & (df2['Тип документа'] == 'Продажа'), 'Общая сумма штрафов'].sum())
 
-        list1.append(df2.loc[(df2['Код номенклатуры'] == i), 'Услуги по доставке товара покупателю'].sum())
         list1.append("")
+        list1.append(df2.loc[(df2['Код номенклатуры'] == i), 'Услуги по доставке товара покупателю'].sum())
 
         list1.append(df2.loc[(df2['Код номенклатуры'] == i) & (df2['Тип документа'] == 'Возврат'), 'Цена розничная с учетом согласованной скидки'].sum())
         list1.append(df2.loc[(df2['Код номенклатуры'] == i) & (df2['Тип документа'] == 'Продажа'), 'Цена розничная с учетом согласованной скидки'].sum())
@@ -186,7 +186,7 @@ def gen_analitica(file_2, file_1, user_id):
                                                    f"=IF(S{len_df+1}=0,0,V{len_df+1}/S{len_df+1})", f"=IF(Q{len_df+1}=0,0,V{len_df+1}/Q{len_df+1})", 
                                                    f"=M{len_df+1}-N{len_df+1}-P{len_df+1}-Q{len_df+1}-R{len_df+1}-AG{len_df+1}", f"=SUM(W39:W{len_df})", f"=SUM(X39:X{len_df})", 
                                                    f"=AVERAGE(Y39:Y{len_df})", f"=SUM(Z39:Z{len_df})", f"=SUM(AA39:AA{len_df})", f"=AVERAGE(AB39:AB{len_df})", 
-                                                   f"=AVERAGE(AC39:AC{len_df})", f"=AVERAGE(AD39:AD{len_df})", "", "", f"=SUM(AG39:AG{len_df})", f"=IF({len_df+1}=0;0;AG{len_df+1}/S{len_df+1})"]
+                                                   f"=AVERAGE(AC39:AC{len_df})", f"=AVERAGE(AD39:AD{len_df})", "", "", f"=SUM(AG39:AG{len_df})", f"=IF(S{len_df+1}=0,0,AG{len_df+1}/S{len_df+1})"]
 
 
 
