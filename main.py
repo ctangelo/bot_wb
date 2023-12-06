@@ -31,7 +31,7 @@ def gen_analitica(file_2, file_1, user_id):
 
     df = pd.read_excel(file_1)
     df2 = pd.read_excel(file_2)
-    df1_1 = pd.read_excel(file_1, sheet_name='Товары')
+    df1_1 = pd.read_excel(file_1, sheet_name='Товары', skiprows=1)
 
 
     code = df2['Код номенклатуры'].unique()
