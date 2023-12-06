@@ -8,10 +8,11 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.types import InputFile
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from main import gen_analitica
+import config
 
 
 storage = MemoryStorage()
-TOKEN = 'TOKEN'
+TOKEN = config.TOKEN
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot, storage=storage)
