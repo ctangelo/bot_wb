@@ -45,9 +45,6 @@ async def upload(message: types.Message, state=FSMContext):
 async def import_file_1(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     await message.document.download(destination_file=f"/root/doc/{user_id}/file_1.xlsx")
-   
-    
-    
     await message.reply('Теперь загрузите отчет ВОРОНКА ПРОДАЖ (из аналитики продавца)')
     await FSMXlsx.next()
 
