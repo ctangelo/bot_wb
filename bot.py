@@ -50,7 +50,7 @@ async def import_file_1(message: types.Message, state: FSMContext):
 
 @dp.message_handler(content_types=['document'], state=FSMXlsx.file_2)
 async def import_file_2(message: types.Message, state: FSMContext):
-    await message.reply('Спасибо, ваш отчет будет готов через минуту')
+    await message.reply('Спасибо, Ваш отчет будет готов через минуту')
     user_id = message.from_user.id
     await message.document.download(destination_file=f"/root/doc/{user_id}/file_2.xlsx")
     file_1 = f"/root/doc/{user_id}/file_1.xlsx"
