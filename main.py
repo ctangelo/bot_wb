@@ -34,10 +34,11 @@ def gen_analitica(file_2, file_1, user_id):
     df1_1 = pd.read_excel(file_1, sheet_name='Товары', skiprows=1)
 
 
-    code = df1_1['Номенклатура'].unique()
-   
-    articul = np.sort(df1_1['Артикул продавца'].unique())
-   
+    code = df2['Код номенклатуры'].unique()
+    print(type(code))
+    # articul = np.sort(df2['Артикул поставщика'].unique())
+    articul = (df2['Артикул поставщика'].unique())
+    print(articul)
 
 
     list1 = []
