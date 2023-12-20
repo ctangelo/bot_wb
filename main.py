@@ -40,7 +40,7 @@ def gen_analitica(file_2, file_1, user_id):
     
     code = []
     for i in articul:
-        code.append(next(iter(df2.loc[(df2['Код номенклатуры'] == i), 'Артикул поставщика']), 'no match'))
+        code.append(next(iter(df2.loc[(df2['Артикул поставщика'] == i), 'Код номенклатуры']), 'no match'))
 
     list1 = []
     list2 = []
