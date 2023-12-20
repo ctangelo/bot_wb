@@ -34,10 +34,10 @@ def gen_analitica(file_2, file_1, user_id):
     df1_1 = pd.read_excel(file_1, sheet_name='Товары', skiprows=1)
 
 
-    code = df2['Код номенклатуры'].unique()
-    print(code)
-    # articul = np.sort(df2['Артикул поставщика'].unique())
-    articul = (df2['Артикул поставщика'].unique())
+    code = df1_1['Номенклатура'].unique()
+   
+    articul = np.sort(df1_1['Артикул продавца'].unique())
+   
 
 
     list1 = []
@@ -82,7 +82,7 @@ def gen_analitica(file_2, file_1, user_id):
     list2.append([' ', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 
                   'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа'])
 
-    print(list2)
+  
     list2.sort()
 
     fullstats_svodnaya = pd.DataFrame(list2, columns = ['Артикул поставщика', 'Вайлдберриз реализовал Товар (Пр)', 'Продажа', 
