@@ -33,24 +33,19 @@ def gen_analitica(file_2, file_1, user_id):
     df2 = pd.read_excel(file_2, sheet_name='Sheet1')
     df1_1 = pd.read_excel(file_1, sheet_name='Товары', skiprows=1)
 
-
-    code_not_filtered = df2['Код номенклатуры'].unique()
-    code = [x for x in code_not_filtered if x != 0]
-
-    print(code)
-    # articul = np.sort(df2['Артикул поставщика'].unique())
+    
     articul_nan = (df2['Артикул поставщика'].dropna().unique())
     articul = np.sort(articul_nan)
     print(articul)
     
-
+    code = []
+    for i in articul:
+        code.append(next(iter(df2.loc[(df2['Код номенклатуры'] == i), 'Артикул поставщика']), 'no match'))
 
     list1 = []
     list2 = []
 
     for i in code:
-        if (next(iter(df2.loc[(df2['Код номенклатуры'] == i), 'Артикул поставщика']), 'no match')) == 'nan':
-            continue
 
         list1.append(next(iter(df2.loc[(df2['Код номенклатуры'] == i), 'Артикул поставщика']), 'no match'))
 
