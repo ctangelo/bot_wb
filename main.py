@@ -35,6 +35,7 @@ def gen_analitica(file_2, file_1, user_id):
 
 
     code = df2['Код номенклатуры'].unique()
+    print(code)
     # articul = np.sort(df2['Артикул поставщика'].unique())
     articul = (df2['Артикул поставщика'].unique())
 
