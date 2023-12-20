@@ -35,8 +35,8 @@ def gen_analitica(file_2, file_1, user_id):
 
 
     code = df2['Код номенклатуры'].unique()
-    articul = np.sort(df2['Артикул поставщика'].unique())
-    
+    # articul = np.sort(df2['Артикул поставщика'].unique())
+    articul = (df2['Артикул поставщика'].unique())
 
 
     list1 = []
@@ -94,13 +94,10 @@ def gen_analitica(file_2, file_1, user_id):
 
     # делаем Себстоимость и Затраты на РК
     for i in articul:
-        if i == "":
-            continue
-        else:
-            list1.append(i)
-            list1.append(next(iter(df2.loc[(df2['Артикул поставщика'] == i), 'Код номенклатуры']), 'no match'))
-            list2.append(list1)
-            list1 = []
+        list1.append(i)
+        list1.append(next(iter(df2.loc[(df2['Артикул поставщика'] == i), 'Код номенклатуры']), 'no match'))
+        list2.append(list1)
+        list1 = []
 
     marketing_df = pd.DataFrame(list2, columns=['Артикул поставщика', 'Номенклатура'])
     marketing_df['Затраты на Р/К'] = ''
