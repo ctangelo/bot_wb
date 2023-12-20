@@ -49,7 +49,7 @@ def gen_analitica(file_2, file_1, user_id):
     list2 = []
 
     for i in code:
-        if np.isnan(next(iter(df2.loc[(df2['Код номенклатуры'] == i), 'Артикул поставщика']), 'no match')) is False:
+        if (next(iter(df2.loc[(df2['Код номенклатуры'] == i), 'Артикул поставщика']), 'no match')) == 'nan':
             continue
 
         list1.append(next(iter(df2.loc[(df2['Код номенклатуры'] == i), 'Артикул поставщика']), 'no match'))
