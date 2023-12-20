@@ -49,6 +49,9 @@ def gen_analitica(file_2, file_1, user_id):
     list2 = []
 
     for i in code:
+        if np.isnan(next(iter(df2.loc[(df2['Код номенклатуры'] == i), 'Артикул поставщика']), 'no match')) is False:
+            continue
+
         list1.append(next(iter(df2.loc[(df2['Код номенклатуры'] == i), 'Артикул поставщика']), 'no match'))
 
         list1.append(df2.loc[(df2['Код номенклатуры'] == i) & (df2['Тип документа'] == 'Возврат'), 'Вайлдберриз реализовал Товар (Пр)'].sum())
@@ -507,3 +510,5 @@ def gen_analitica(file_2, file_1, user_id):
     workbook.save(filename=f'/root/doc/{user_id}/Отчет_{date_min.strftime("%d.%m")}_{date_max.strftime("%d.%m")}_{user_id}.xlsx')
     date = [date_min.strftime("%d.%m"), date_max.strftime("%d.%m")]
     return date
+
+
