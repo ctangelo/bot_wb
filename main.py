@@ -113,7 +113,7 @@ def gen_analitica(file_2, file_1, user_id):
     list2 = []
     for i in articul:
         list1.append(i)
-        list1.append(len(df2[(df2['Артикул поставщика'] == i) & (df2['Обоснование для оплаты'] == 'Продажа')]))
+        list1.append(len(df2[(df2['Артикул поставщика'] == i) & (df2['Обоснование для оплаты'] == 'продажа')]))
         list2.append(list1)
         list1 = []
 
