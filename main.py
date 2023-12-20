@@ -34,9 +34,9 @@ def gen_analitica(file_2, file_1, user_id):
     df1_1 = pd.read_excel(file_1, sheet_name='Товары', skiprows=1)
 
 
-    code = df2['Код номенклатуры'].unique()
-    if 0 in code:
-        np.delete(code, np.where(0))
+    code_not_filtered = df2['Код номенклатуры'].unique()
+    code = [x for x in code_not_filtered if x != 0]
+
     print(code)
     # articul = np.sort(df2['Артикул поставщика'].unique())
     articul_nan = (df2['Артикул поставщика'].dropna().unique())
