@@ -33,20 +33,15 @@ def gen_analitica(file_2, file_1, user_id):
     df2 = pd.read_excel(file_2, sheet_name='Sheet1')
     df1_1 = pd.read_excel(file_1, sheet_name='Товары', skiprows=1)
 
-    
-    articul_nan = (df2['Артикул поставщика'].dropna().unique())
-    articul = np.sort(articul_nan)
-    print(articul)
-    
-    code = []
-    for i in articul:
-        code.append(next(iter(df2.loc[(df2['Артикул поставщика'] == i), 'Код номенклатуры']), 'no match'))
+
+    code = df2['Код номенклатуры'].unique()
+    articul = np.sort(df2['Артикул поставщика'].unique())
+
 
     list1 = []
     list2 = []
 
     for i in code:
-
         list1.append(next(iter(df2.loc[(df2['Код номенклатуры'] == i), 'Артикул поставщика']), 'no match'))
 
         list1.append(df2.loc[(df2['Код номенклатуры'] == i) & (df2['Тип документа'] == 'Возврат'), 'Вайлдберриз реализовал Товар (Пр)'].sum())
@@ -85,7 +80,6 @@ def gen_analitica(file_2, file_1, user_id):
     list2.append([' ', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 
                   'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа', 'Возврат', 'Продажа'])
 
-    print(list2)
     list2.sort()
 
     fullstats_svodnaya = pd.DataFrame(list2, columns = ['Артикул поставщика', 'Вайлдберриз реализовал Товар (Пр)', 'Продажа', 
@@ -113,10 +107,9 @@ def gen_analitica(file_2, file_1, user_id):
     list2 = []
     for i in articul:
         list1.append(i)
-        list1.append(len(df2[(df2['Артикул поставщика'] == i) & (df2['Обоснование для оплаты'] == 'продажа')]))
+        list1.append(len(df2[(df2['Артикул поставщика'] == i) & (df2['Обоснование для оплаты'] == 'Продажа')]))
         list2.append(list1)
         list1 = []
-
 
     # делаем Продажи
     sales_df = pd.DataFrame(list2, columns=['Артикул поставщика', 'Продажа'])
@@ -176,6 +169,7 @@ def gen_analitica(file_2, file_1, user_id):
         fullstats_analytica2 = []
 
 
+
     fullstats1_df = pd.DataFrame(fullstats_analytica, columns=['Бренд', 'Категория',	'Артикул поставщика', 'Номенклатура', 'Себестоимость', 'Кол-во Заказов', 
                                                                'Количество продаж ( с учетом возврат и отмен)', 'Цена розничная с учетом согласованной скидки', 
                                                                'Вайлдберриз реализовал Товар (Пр)', 'Комиссия WB (до спп)', 'Комиссия WB (после спп)', 'Цена', 
@@ -217,7 +211,6 @@ def gen_analitica(file_2, file_1, user_id):
     update_spreadsheet(middle_path, fullstats1_df, 1, 38, sheet_name='Аналитика')
 
 
-
     lst = ['Денег на складе wb', 'Остатки', 'Остатки (склад wb)', 'Налог, %', 'Хранение, руб', 'Реклама, руб', 'Прочие расходы, руб']
     lst_2 = [f'=Z{len_df+1}', f'=AA{len_df+1}', f'=W{len_df+1}', '', '','','']
 
@@ -237,8 +230,6 @@ def gen_analitica(file_2, file_1, user_id):
         price_df.to_excel(writer, sheet_name="Себестоимость", index=False)
         sales_df.to_excel(writer, sheet_name="Продажи", index=False)
         fullstats_svodnaya.to_excel(writer, sheet_name="Сводная таблица", index=False)
-
-
 
 
 
@@ -469,9 +460,11 @@ def gen_analitica(file_2, file_1, user_id):
     fullstats_svodnaya_sheet.column_dimensions["T"].width = 20
     fullstats_svodnaya_sheet.column_dimensions["U"].width = 20
 
+
     for i in range(1, 2):
         for cell in fullstats_svodnaya_sheet[f"{i}:{i}"]:
             cell.alignment = Alignment(wrap_text=True, horizontal='center')
+
 
     fullstats_svodnaya_sheet.merge_cells('B1:C1')
     fullstats_svodnaya_sheet.merge_cells('D1:E1')
@@ -483,6 +476,7 @@ def gen_analitica(file_2, file_1, user_id):
     fullstats_svodnaya_sheet.merge_cells('P1:Q1')
     fullstats_svodnaya_sheet.merge_cells('R1:S1')
     fullstats_svodnaya_sheet.merge_cells('T1:U1')
+
 
     for row in fullstats_svodnaya_sheet.iter_rows(min_row=1, min_col=1, max_row=len_df-19, max_col=21):
         for cell in row:
@@ -502,8 +496,7 @@ def gen_analitica(file_2, file_1, user_id):
     fullstats_svodnaya_sheet.sheet_state = 'hidden'
     sales.sheet_state = 'hidden'
 
+
     workbook.save(filename=f'/root/doc/{user_id}/Отчет_{date_min.strftime("%d.%m")}_{date_max.strftime("%d.%m")}_{user_id}.xlsx')
     date = [date_min.strftime("%d.%m"), date_max.strftime("%d.%m")]
     return date
-
-
